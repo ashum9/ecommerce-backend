@@ -5,6 +5,8 @@ import cors from "cors"
 import dotenv from "dotenv"
 import connectDB from "./config/db.js"
 
+
+
 //dotenv config
 dotenv.config()
 
@@ -18,9 +20,10 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(cors())
 
-//route
-import { registerUser } from "./routes/user.route.js"
-app.use("/api/v1/user", registerUser);
+//routes
+import router from "./routes/user.route.js"
+app.use("/api/v1/user/", router);
+
 
 app.get("/" , (req,res) => {
     return res.status(200).send("swagat hai")

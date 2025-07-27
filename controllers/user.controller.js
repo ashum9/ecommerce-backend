@@ -42,3 +42,53 @@ export const registerController = async (req,res) => {
         })
     }
 }
+
+export const loginController = async (req,res) => {
+
+    try {
+
+        const {email , password} = req.body
+
+        if(!email || !password){
+            return res.status(400).json({
+                success : false ,
+                message : "please fill all required inputs!"
+            })
+        }
+
+        //check whether registered or not
+        const user = await User.findOne({email})
+        
+        if(!user){
+            return res.status(400).json({
+                success : false ,
+                message : "please register first"
+            })
+        }
+
+        // match password
+        const passValid = await user.comparePassword(password);
+
+        if(!passValid){
+            return res.status(400).json({
+                success : false ,
+                message : "invalid credentials"
+            })
+        }
+
+        res.status(200).json({
+            success : true ,
+            message : "loginc successfully !",
+            user
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            success : false,
+            message : "error in login "
+        })
+        
+    }
+
+}

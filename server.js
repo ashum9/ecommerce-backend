@@ -3,9 +3,13 @@ import colors from "colors"
 import morgan from "morgan"
 import cors from "cors"
 import dotenv from "dotenv"
+import connectDB from "./config/db.js"
 
 //dotenv config
 dotenv.config()
+
+//db connection
+connectDB()
 
 const app = express()
 

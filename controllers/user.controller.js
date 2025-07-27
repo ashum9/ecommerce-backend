@@ -76,10 +76,14 @@ export const loginController = async (req,res) => {
             })
         }
 
-        res.status(200).json({
+        const token = user.jwtToken()
+
+        res.status(200)
+        .cookie("token" , token)
+        .json({
             success : true ,
             message : "loginc successfully !",
-            user
+            user,token
         })
         
     } catch (error) {

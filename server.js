@@ -19,6 +19,9 @@ app.use(express.json())
 app.use(cors())
 
 //route
+import { registerUser } from "./routes/user.route.js"
+app.use("/api/v1/user", registerUser);
+
 app.get("/" , (req,res) => {
     return res.status(200).send("swagat hai")
 })

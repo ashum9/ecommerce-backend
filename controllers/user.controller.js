@@ -1,3 +1,4 @@
+import { token } from "morgan";
 import { User } from "../models/user.model.js";
 
 export const registerController = async (req,res) => {
@@ -92,7 +93,28 @@ export const loginController = async (req,res) => {
             success : false,
             message : "error in login "
         })
-        
+    }
+}
+
+export const getProfile = async(req,res) => {
+
+    try {
+        const user = await User.findById(req.user._id)
+        user.password = undefined
+        res.status(200).json({
+            success : true ,
+            message : "profile pe aa gye !",
+            user
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success : false,
+            message : "error in loading profile",
+            error
+        })
     }
 
 }
+

@@ -118,3 +118,22 @@ export const getProfile = async(req,res) => {
 
 }
 
+export const logoutUser = async (req,res) => {
+
+    try {
+        
+        res.status(200).cookie("token" , "").json({
+            success : true , 
+            message : "logout successfully"
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success : false ,
+            message : "error in logout"
+        })
+        
+    }
+
+}

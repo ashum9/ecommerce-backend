@@ -1,4 +1,6 @@
 import productModel from "../models/product.model.js";
+import cloudinary from "cloudinary"
+import { getDataUri } from "../utils/feature.js";
 
 export const getAllProductController = async (req , res) => {
 
@@ -60,6 +62,50 @@ export const getSingleProductController = async (req , res) => {
         res.status(500).json({
             success : false ,
             message : "error in getting this product",
+            error
+        })
+        
+    }
+
+}
+
+export const createProductController = async( req,res) => {
+
+    try {
+        
+        const {name , description , price , stock , category } = req.body;
+
+        //validation
+        if(!name || !description || !price || !stock){
+            return res.status(500).json({
+                success : false ,
+                message : "please enter all required fields"
+            })
+        }
+
+        const file = getDataUri(req.file)
+        const cdb = await cloudinary.v2.uploader.upload(file.content)
+        const image = {
+            public_id : cdb.public_id,
+            url : cdb.secure_url
+        }
+
+        await productModel.create({
+            name , description , price , stock , images : [image]
+        })
+
+        res.status(201).json({
+            success : true ,
+            message : "product created successfully"
+        })
+
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success : false,
+            message : "error in creatin product now",
             error
         })
         

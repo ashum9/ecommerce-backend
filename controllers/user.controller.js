@@ -212,3 +212,45 @@ export const updatePass = async (req,res) => {
     }
 
 }
+
+export const updateDP = async(req , res) => {
+
+    try {
+
+        const user = await User.findById(req.user._id);
+
+        // get file from user
+        // getDataUri function will convert that file to 
+        // base64 which can be accepted by cdb
+
+        const file = getDataUri(req.file) // converted user file to base64
+
+        // delete prev file
+        // await cloudinary.v2.uploader.destroy(user.profilePic.public_id);
+
+        // update with new file
+        const cdb = await cloudinary.v2.uploader.upload(file.content)
+        user.profilePic = {
+            public_id : cdb.public_id,
+            url : cdb.secure_url
+        }
+
+        // save it!
+        await user.save()
+
+        res.status(200).json({
+            success : true ,
+            message : "dp updated successfully"
+        })
+
+    }catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success : false,
+            message : "error in updating dp",
+            error
+        })
+        
+    }
+    
+}

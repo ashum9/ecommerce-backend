@@ -27,6 +27,8 @@ router.put("/update" , isAuth, profileUpdate)
 // update password user
 router.put("/update-password" , isAuth , updatePass)
 
+// update dp user
+router.put("/update-dp" , isAuth , singleUpload , updateDP)
 
 
 

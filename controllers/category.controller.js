@@ -107,3 +107,59 @@ export const deleteCategory = async (req,res) => {
     }
 
 }
+
+export const updateCategory = async (req,res) => {
+
+    try {
+        
+        // first find category
+        // take parameters from user
+        // update it 
+
+        const categories = await CategoryModel.findById(req.params.id)
+
+        if(!categories){
+            return res.status(500).json({
+                success : false ,
+                message : "category not found"
+            })
+        }
+
+        // take new cat from user
+        const {newCategory} = req.body
+
+        // find the product which have old category
+        const products = await productModel.find({category : categories._id})
+        // update these products category to newCategory
+
+        for(let i = 0 ; i < products.length ; i++){
+            const singleProduct = products[i];
+            singleProduct.category = newCategory;
+            await singleProduct.save()
+        }
+
+        if(newCategory) categories.category = newCategory
+
+        await categories.save()
+        res.status(200).json({
+            success : true ,
+            message : "updated category successfully"
+        })
+
+    } catch (error) {
+        console.log(error);
+        if(error.name === "CastError"){
+            return res.status(500).json({
+                success : false ,
+                message : "invalid id"
+            })
+        }
+
+        res.status(500).json({
+            success : false ,
+            message : "error in deleting category"
+        })
+        
+    }
+
+}

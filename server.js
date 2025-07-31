@@ -29,8 +29,12 @@ app.use(cors())
 app.use(cookieParser())
 
 //routes
-import router from "./routes/user.route.js"
-app.use("/api/v1/user/", router);
+import userRoutes from "./routes/user.route.js"
+import productRoutes from "./routes/product.route.js"
+
+
+app.use("/api/v1/user/", userRoutes);
+app.use("/api/v1/product" , productRoutes)
 
 
 app.get("/" , (req,res) => {

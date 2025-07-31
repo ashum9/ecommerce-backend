@@ -26,12 +26,18 @@ const userSchema = new mongoose.Schema({
         required : [true , "country code ke sath dalne ka"]
     },
     profilePic : {
-        type : String
+        public_id :String , 
+        url : String 
     }
 }, {timestamps : true })
 
 // pass hash function
-userSchema.pre("save" , async function () {
+userSchema.pre("save" , async function (next) {
+    // baki fields ke change hone ke baad user save hota hai and ispe 
+    // firse hashing lag jaegi , islie hame ise prevent krna hai
+    // and if pass is changing then only call this 
+
+    if(!this.isModified("password")) return next()
     this.password = await bcrypt.hash(this.password , 10 )
 })
 

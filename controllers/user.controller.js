@@ -1,11 +1,11 @@
-import { token } from "morgan";
 import { User } from "../models/user.model.js";
+import { getDataUri } from "../utils/feature.js";
+import cloudinary from "cloudinary";
 
 export const registerController = async (req,res) => {
     try {
         
         const {name , email , password , address , phone , profilePic} = req.body
-
         // validation 
         if(!name || !email || !password || !address || !phone ){
             return res.status(400).json({
@@ -83,7 +83,7 @@ export const loginController = async (req,res) => {
         .cookie("token" , token)
         .json({
             success : true ,
-            message : "loginc successfully !",
+            message : "login successfully !",
             user,token
         })
         

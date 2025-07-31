@@ -5,13 +5,20 @@ import cors from "cors"
 import dotenv from "dotenv"
 import connectDB from "./config/db.js"
 import cookieParser from "cookie-parser"
-
+import { v2 as cloudinary } from "cloudinary"
 
 //dotenv config
 dotenv.config()
 
 //db connection
 connectDB()
+
+//cloudinary config
+cloudinary.config({
+    cloud_name : process.env.CLOUDINARY_NAME,
+    api_key : process.env.CLOUDINARY_KEY,
+    api_secret : process.env.CLOUDINARY_SECRET
+})
 
 const app = express()
 

@@ -1,14 +1,26 @@
 import express from "express"
-import { getProfile, loginController, registerController } from "../controllers/user.controller.js"
+
+import { forgotPass, getProfile, loginController, logoutUser, profileUpdate, registerController, updateDP, updatePass } from "../controllers/user.controller.js"
 import { isAuth } from "../middlewares/auth.middleware.js"
+import { singleUpload } from "../middlewares/multer.js"
 
 //router object
 const router = express.Router()
 
 //routes
+
+// register user
 router.post("/register" , registerController)
+
+// login user
 router.post("/login" , loginController)
+
+// get profile 
 router.get("/profile" , isAuth ,getProfile)
-router.get("/logout" , isAuth)
+
+// logout user
+router.get("/logout" , isAuth , logoutUser)
+
+
 
 export default router

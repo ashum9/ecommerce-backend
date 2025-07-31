@@ -112,3 +112,50 @@ export const createProductController = async( req,res) => {
     }
 
 }
+
+export const updateProductController = async (req,res) => {
+
+    try {
+
+        const product = await productModel.findById(req.params.id)
+        // if product not in db -> validation
+
+        if(!product){
+            return res.status(400).json({
+                success : false ,
+                message : "product is not registered"
+            })
+        }
+
+        const {name , description , price , stock } = req.body
+
+        // if name has any value -> update it!
+        if(name) product.name = name
+        if(description) product.description = description
+        if(price) product.price = price
+        if(stock) product.stock = stock
+
+
+        await product.save()
+        res.status(200).json({
+            success : true,
+            message : "updated values successfully"
+        })
+        
+    } catch (error) {
+        console.log(error);
+        if(error.name === "CastError"){
+            return res.status(500).json({
+                success : false,
+                message : "invalid id"
+            })
+        }
+        res.status(500).json({
+            success : false ,
+            message : "error in updating product",
+            error
+        })
+        
+    }
+
+}

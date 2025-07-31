@@ -254,3 +254,49 @@ export const updateDP = async(req , res) => {
     }
     
 }
+
+export const forgotPass = async (req , res) => {
+
+    try {
+        
+        // token is must 
+        const {email , newPass , answer} = req.body
+
+        // alll fields required : validation
+
+        if(!email || !newPass || !answer){
+            return res.status(500).json({
+                success : false ,
+                message : "kindly field all parameters"
+            })
+        }
+
+        const user = await User.findOne({email , answer})
+
+        if(!user){
+            return res.status(400).json({
+                success : false ,
+                message : "invalid user or answer"
+            })
+        }
+
+        user.password = newPass
+
+        await user.save()
+
+        res.status(200).json({
+            success : true ,
+            message : "password reset successfully"
+        })
+
+    } catch (error) {
+        console.log(erro);
+        res.status(500).json({
+            success : false ,
+            message : "error in resetting password"
+        })
+        
+    }
+
+}
+

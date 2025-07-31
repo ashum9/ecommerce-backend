@@ -30,6 +30,7 @@ router.put("/update-password" , isAuth , updatePass)
 // update dp user
 router.put("/update-dp" , isAuth , singleUpload , updateDP)
 
-
+// forgot password user 
+router.post("/reset-password" , forgotPass)
 
 export default router

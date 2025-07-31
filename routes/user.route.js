@@ -21,6 +21,13 @@ router.get("/profile" , isAuth ,getProfile)
 // logout user
 router.get("/logout" , isAuth , logoutUser)
 
+// update profile user
+router.put("/update" , isAuth, profileUpdate)
+
+// update password user
+router.put("/update-password" , isAuth , updatePass)
+
+
 
 
 export default router

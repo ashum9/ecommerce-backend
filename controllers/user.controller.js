@@ -137,3 +137,78 @@ export const logoutUser = async (req,res) => {
     }
 
 }
+
+export const profileUpdate = async (req,res) => {
+    try {
+        
+        const user = await User.findById(req.user._id)
+        const {email,name,address,phone} = req.body
+
+        if(email) user.email = email
+        if(name) user.name = name
+        if(address) user.address = address
+        if(phone) user.phone = phone
+
+        //after updating these values -> save the user
+
+        await user.save()
+        res.status(200).json({
+            success : true ,
+            message : "prodfile updated successfully"
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success : false,
+            message : "error in updating profile",
+            error
+        })
+        
+    }
+}
+
+export const updatePass = async (req,res) => {
+
+    try {
+        
+        const user = await User.findById(req.user._id)
+
+        const {oldPass , newPass} = req.body
+
+        if(!oldPass || !newPass){
+            return res.status(400).json({
+                success : false ,
+                message : "kindly enter oldPass and newPass"
+            })
+        }
+
+        // check whether old pass is same as db pass
+        const isMatch = await user.comparePassword(oldPass)
+
+        // validation for old and db pass
+        if(!isMatch){
+            return res.status(400).json({
+                success : false ,
+                message : "wrond old pass , please enter correct old pass"
+            })
+        }
+
+        user.password = newPass;
+        await user.save()
+        res.status(200).json({
+            success : true ,
+            message : "password updated successfully"
+        })
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success : false ,
+            message : "error in updating pass",
+            error
+        })
+    }
+
+}

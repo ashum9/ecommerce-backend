@@ -217,3 +217,117 @@ export const updateImageProductController = async (req , res) => {
     }
 
 }
+
+export const deleteImageProductController = async (req, res) => {
+    try {
+        const product = await productModel.findById(req.params.id)
+
+        if(!product){
+            return res.status(500).json({
+                success : false ,
+                message : "product not found"
+            })
+        }
+
+        // image id find
+        const id = req.query.id ;
+        if(!id){
+            return res.status(500).json({
+                success : false,
+                message : "product image not found"
+            })
+        }
+
+        let isExist = -1 ;
+
+        // kisi bhi image ka id match kia then isExist ko index value de denge
+        product.images.forEach((item , index) => {
+            if(item._id.toString === id.toString()){
+                isExist = index;
+            }
+        })
+
+        if(isExist < 0){
+            return res.status(404).json({
+                success : false ,
+                message : "image not found"
+            })
+        }
+
+        // delete the image from db and server
+        // server
+        await cloudinary.v2.uploader.destroy(product.images[isExist].public_id)
+        // db
+        product.images.splice(isExist , 1) // konse element se kitne elements delete krne hai
+
+        await product.save()
+
+        return res.status(200).json({
+            success : true,
+            message : "product image deleted successfully"
+        })        
+    } catch (error) {
+        console.log(error);
+        if(error.name === "CastError"){
+            return res.status(500).json({
+                success : false ,
+                message : "invalid id"
+            })
+        }
+
+        return res.status(500).json({
+            success : false ,
+            message : "error in deleting image",
+            error
+        })
+        
+    }
+}
+
+export const deleteProductController = async (req, res) => {
+
+    try {
+        
+        // first find product
+        // delete image from server
+        // delete from db
+
+        const product = await productModel.findById(req.params.id)
+
+        if(!product){
+            return res.status(404).json({
+                success : false ,
+                message : "product not found in db"
+            })
+        }
+
+        // us product ki sari images delete krdo server me se 
+        // all images delete 
+        for(let index = 0 ; index < product.images.length ; index++){
+            await cloudinary.v2.uploader.destroy(product.images[index].public_id)
+        }
+
+        await product.deleteOne()
+
+        res.status(200).json({
+            success : true , 
+            message : "product delete successfully"
+        })
+
+    } catch (error) {
+        console.log(error);
+        if(error.name === "CastError"){
+            return res.status(500).json({
+                success : false ,
+                message : "invalid id"
+            })
+        }
+
+        return res.status(500).json({
+            success : false ,
+            message : "error in deleting product",
+            error
+        })
+    }
+
+}
